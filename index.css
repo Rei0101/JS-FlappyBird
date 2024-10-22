@@ -1,0 +1,10 @@
+body {
+    display: flex;
+    
+}
+
+#game-canvas{
+    margin: auto;
+    border: solid black 1px;
+    background-color: skyblue;
+}
