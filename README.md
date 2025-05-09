@@ -1,3 +1,3 @@
 # JS-FlappyBird
 
-Projekt je igra Flappy bird rekreirana u Vanilla JavaScriptu koristeći klasičnu canvas funkcionalnost.
+Flappy bird game recreated in vanilla JS, using classing canvas functionality.
