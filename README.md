@@ -1,6 +1,6 @@
 # JS-FlappyBird
 
-Flappy bird game recreated in vanilla JS, using classing canvas functionality.
+Flappy bird game recreated in vanilla JS, using classic canvas API functionality.
 
 ## Cloning and running
 
