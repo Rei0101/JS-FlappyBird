@@ -11,8 +11,8 @@ export default class Bird {
 
     this.currentImage = this.imageUp; // Start with the "up" image
 
-    this.x = this.game.CVS_WIDTH / 2 - 50;
-    this.#y = this.game.CVS_HEIGHT / 2 - 70;
+    this.x = this.game.GAME_WIDTH / 2 - 50;
+    this.#y = this.game.GAME_HEIGHT / 2 - 70;
 
     this.width = 50;
     this.height = 40;
@@ -25,7 +25,7 @@ export default class Bird {
     return this.#y;
   }
   set y(v) {
-    if (v > this.game.CVS_HEIGHT || v < 0 - this.height)
+    if (v > this.game.GAME_HEIGHT || v < 0 - this.height)
       this.game.gameIsOver = true;
     else this.#y = v;
   }
@@ -47,8 +47,8 @@ export default class Bird {
   }
 
   reset() {
-    this.x = this.game.CVS_WIDTH / 2 - 70;
-    this.#y = this.game.CVS_HEIGHT / 2 - 70;
+    this.x = this.game.GAME_WIDTH / 2 - 70;
+    this.#y = this.game.GAME_HEIGHT / 2 - 70;
 
     this.gravity = 0.45;
     this.velocity = 0;

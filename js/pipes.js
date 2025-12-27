@@ -8,12 +8,12 @@ export default class Pipes {
     this.gap = 200;
 
     this.#x = this.startPoint;
-    this.topY = Math.random() * (this.game.CVS_HEIGHT - this.gap);
+    this.topY = Math.random() * (this.game.GAME_HEIGHT - this.gap);
     this.botY = this.topY + this.gap;
 
     this.width = 75;
     this.topHeight = this.topY;
-    this.botHeight = this.game.CVS_HEIGHT - this.botY;
+    this.botHeight = this.game.GAME_HEIGHT - this.botY;
 
     this.velocity = 2.7;
 
@@ -81,10 +81,10 @@ export default class Pipes {
 
   reset() {
     this.x = this.startPoint;
-    this.topY = Math.random() * (this.game.CVS_HEIGHT - this.gap);
+    this.topY = Math.random() * (this.game.GAME_HEIGHT - this.gap);
     this.botY = this.topY + this.gap;
 
     this.topHeight = this.topY;
-    this.botHeight = this.game.CVS_HEIGHT - this.botY;
+    this.botHeight = this.game.GAME_HEIGHT - this.botY;
   }
 }

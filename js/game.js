@@ -2,7 +2,7 @@ import Bird from "./bird.js";
 import Pipes from "./pipes.js";
 
 export default class Game {
-  constructor(cvs, ctx, CVS_WIDTH, CVS_HEIGHT) {
+  constructor(cvs, ctx, GAME_WIDTH, GAME_HEIGHT) {
     this.cvs = cvs;
     this.ctx = ctx;
 
@@ -13,8 +13,8 @@ export default class Game {
     this.pipesElapsed = 0;
     this.flappingElapsed = 0;
 
-    this.CVS_WIDTH = CVS_WIDTH;
-    this.CVS_HEIGHT = CVS_HEIGHT;
+    this.GAME_WIDTH = GAME_WIDTH;
+    this.GAME_HEIGHT = GAME_HEIGHT;
 
     this.bird = new Bird(this);
     this.pipes = [];
@@ -50,7 +50,7 @@ export default class Game {
     this.bird.update();
   }
   render(ctx) {
-    ctx.clearRect(0, 0, this.CVS_WIDTH, this.CVS_HEIGHT);
+    ctx.clearRect(0, 0, this.GAME_WIDTH, this.GAME_HEIGHT);
 
     this.bird.render(ctx);
 
@@ -139,14 +139,14 @@ export default class Game {
     this.ctx.textAlign = "center";
     this.ctx.fillText(
       "Click anywhere to start!",
-      this.CVS_WIDTH / 2,
-      this.CVS_HEIGHT / 2
+      this.GAME_WIDTH / 2,
+      this.GAME_HEIGHT / 2
     );
   }
   renderScore() {
     this.ctx.font = "25px Comic Sans MS";
     this.ctx.fillStyle = "white";
     this.ctx.textAlign = "center";
-    this.ctx.fillText(this.points, this.CVS_WIDTH / 2, this.CVS_HEIGHT / 5);
+    this.ctx.fillText(this.points, this.GAME_WIDTH / 2, this.GAME_HEIGHT / 5);
   }
 }
