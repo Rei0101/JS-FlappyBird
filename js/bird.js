@@ -47,7 +47,7 @@ export default class Bird {
   }
 
   reset() {
-    this.x = this.game.GAME_WIDTH / 2 - 70;
+    this.x = this.game.GAME_WIDTH / 2 - 50;
     this.#y = this.game.GAME_HEIGHT / 2 - 70;
 
     this.gravity = 0.45;
