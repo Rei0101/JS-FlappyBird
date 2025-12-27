@@ -90,6 +90,13 @@ export default class Game {
     this.render(this.ctx);
 
     requestAnimationFrame(this.gameLoop);
+
+    console.log(`Bird: x=${this.bird.x}, y=${this.bird.y}`)
+    console.log(`Pipe pair number: ${this.pipes.length}`)
+    if (this.pipes.length > 0)
+      console.log(`1st pipe pair: x=${this.pipes[0].x}, topY=${this.pipes[0].topY}, botY=${this.pipes[0].botY}`)
+    console.log(`Points: ${this.points}`)
+    console.log("--------------------")
   };
 
   reset() {
