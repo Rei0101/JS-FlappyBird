@@ -6,8 +6,10 @@ export default class Game {
     this.cvs = cvs;
     this.ctx = ctx;
 
-    this.pipesInterval = 2000;
-    this.flappingInterval = 500;
+    this.loopIsRunning = false;
+
+    this.pipesInterval = 3;
+    this.flappingInterval = 0.5;
     this.deltaTime = 0;
     this.lastTime = 0;
     this.pipesElapsed = 0;
@@ -27,10 +29,13 @@ export default class Game {
   setup() {
     this.cvs.addEventListener("click", this.onClick);
 
-    requestAnimationFrame(this.gameLoop);
+    if (!this.loopIsRunning){
+      this.loopIsRunning = true;
+      requestAnimationFrame(this.gameLoop);
+    }
   }
 
-  update() {
+  update(dt) {
     for (const pipePair of this.pipes) {
       if (
         this.areColliding(this.bird.hitbox, pipePair.topHitbox) ||
@@ -44,10 +49,10 @@ export default class Game {
         pipePair.passed = true;
       }
 
-      pipePair.update();
+      pipePair.update(dt);
     }
 
-    this.bird.update();
+    this.bird.update(dt);
   }
   render(ctx) {
     ctx.clearRect(0, 0, this.GAME_WIDTH, this.GAME_HEIGHT);
@@ -61,17 +66,29 @@ export default class Game {
 
   //! Has to be arrow function to preserve the right "this" (.bind() works too)
   gameLoop = (timestamp) => {
-    this.update();
+    if (!this.lastTime) this.lastTime = timestamp;
+    this.deltaTime = timestamp - this.lastTime;
+    this.lastTime = timestamp;
+
+    const dt = this.deltaTime / 1000;
+
+    this.accumulator = this.accumulator || 0;
+    const FIXED_DT = 0.0167;
+
+    this.accumulator += dt;
+
+    while (this.accumulator >= FIXED_DT) {
+      if (!this.gameIsOver) {
+        this.update(FIXED_DT);
+      }
+      this.accumulator -= FIXED_DT;
+    }
 
     if (this.gameIsOver) {
       this.renderGameOver();
-      return;
     } else {
-      this.deltaTime = timestamp - this.lastTime;
-      this.lastTime = timestamp;
-
-      this.flappingElapsed += this.deltaTime;
-      this.pipesElapsed += this.deltaTime;
+      this.flappingElapsed += dt;
+      this.pipesElapsed += dt;
 
       if (this.flappingElapsed >= this.flappingInterval) {
         if (this.bird.currentImage === this.bird.imageUp) {
@@ -85,18 +102,11 @@ export default class Game {
         this.addPipePair();
         this.pipesElapsed = 0;
       }
+
+      this.render(this.ctx);
     }
 
-    this.render(this.ctx);
-
     requestAnimationFrame(this.gameLoop);
-
-    console.log(`Bird: x=${this.bird.x}, y=${this.bird.y}`)
-    console.log(`Pipe pair number: ${this.pipes.length}`)
-    if (this.pipes.length > 0)
-      console.log(`1st pipe pair: x=${this.pipes[0].x}, topY=${this.pipes[0].topY}, botY=${this.pipes[0].botY}`)
-    console.log(`Points: ${this.points}`)
-    console.log("--------------------")
   };
 
   reset() {
@@ -116,7 +126,7 @@ export default class Game {
     let pipePair = new Pipes(this);
     this.pipes.push(pipePair);
   }
-  removePipe(pipePair) {
+  removePipePair(pipePair) {
     let index = this.pipes.indexOf(pipePair);
     if (index > -1) this.pipes.splice(index, 1);
   }
@@ -124,10 +134,9 @@ export default class Game {
   //! Has to be arrow function to preserve the right "this" (.bind() works too)
   onClick = () => {
     if (this.gameIsOver) {
+      console.log('a');
       this.gameIsOver = false;
-      this.cvs.removeEventListener("click", this.onClick);
       this.reset();
-      this.setup();
     } else this.bird.flapWings();
   };
 
