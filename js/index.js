@@ -8,4 +8,4 @@ const GAME_HEIGHT = 700;
 
 let game = new Game(cvs, ctx, GAME_WIDTH, GAME_HEIGHT);
 
-game.setup(cvs, ctx);
+game.setup();

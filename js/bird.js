@@ -9,7 +9,7 @@ export default class Bird {
     this.imageDown = new Image();
     this.imageDown.src = "../images/fb_down.png";
 
-    this.currentImage = this.imageUp; // Start with the "up" image
+    this.currentImage = this.imageUp;
 
     this.x = this.game.GAME_WIDTH / 2 - 50;
     this.#y = this.game.GAME_HEIGHT / 2 - 70;
@@ -17,7 +17,7 @@ export default class Bird {
     this.width = 50;
     this.height = 40;
 
-    this.gravity = 0.45;
+    this.gravity = 600;
     this.velocity = 0;
   }
 
@@ -39,9 +39,10 @@ export default class Bird {
     };
   }
 
-  update() {
-    this.fall();
+  update(dt) {
+    this.fall(dt);
   }
+
   render(ctx) {
     ctx.drawImage(this.currentImage, this.x, this.y, this.width, this.height);
   }
@@ -50,17 +51,15 @@ export default class Bird {
     this.x = this.game.GAME_WIDTH / 2 - 50;
     this.#y = this.game.GAME_HEIGHT / 2 - 70;
 
-    this.gravity = 0.45;
     this.velocity = 0;
   }
 
-  fall() {
-    this.velocity += this.gravity;
-    this.y += this.velocity;
+  fall(dt) {
+    this.velocity += this.gravity * dt;
+    this.y += this.velocity * dt;
   }
 
   flapWings() {
-    this.velocity = -8.5;
-    this.y += this.velocity;
+    this.velocity = -300;
   }
 }

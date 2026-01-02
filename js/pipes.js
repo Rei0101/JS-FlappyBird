@@ -15,7 +15,7 @@ export default class Pipes {
     this.topHeight = this.topY;
     this.botHeight = this.game.GAME_HEIGHT - this.botY;
 
-    this.velocity = 2.7;
+    this.velocity = 100;
 
     this.passed = false;
   }
@@ -24,7 +24,7 @@ export default class Pipes {
     return this.#x;
   }
   set x(v) {
-    if (v + this.width < 0) this.game.removePipe(this);
+    if (v + this.width < 0) this.game.removePipePair(this);
     else this.#x = v;
   }
 
@@ -45,9 +45,10 @@ export default class Pipes {
     };
   }
 
-  update() {
-    this.x -= this.velocity;
+  update(dt) {
+    this.x -= this.velocity * dt;
   }
+
   renderTopPipe(ctx) {
     ctx.fillStyle = "green";
     ctx.strokeStyle = "black";
