@@ -6,6 +6,11 @@ export default class Game {
     this.cvs = cvs;
     this.ctx = ctx;
 
+    this.frameStates = [];
+    this.episodeId = -1;  // So it starts at 0 after reset()
+    this.frameId = 0;
+    this.agentType = "human";
+
     this.loopIsRunning = false;
 
     this.pipesInterval = 3;
@@ -64,7 +69,7 @@ export default class Game {
     this.renderScore();
   }
 
-  //! Has to be arrow function to preserve the right "this" (.bind() works too)
+  // Has to be arrow function to preserve the right "this" (.bind() works too)
   gameLoop = (timestamp) => {
     if (!this.lastTime) this.lastTime = timestamp;
     this.deltaTime = timestamp - this.lastTime;
@@ -87,6 +92,27 @@ export default class Game {
     if (this.gameIsOver) {
       this.renderGameOver();
     } else {
+      this.frameStates.push({
+        episode_id: this.episodeId,
+        frame_id: this.frameId,
+        agent_type: this.agentType,
+        bird_x: this.bird.x,
+        bird_y: this.bird.y,
+        bird_velocity: this.bird.velocity,
+        action: this.bird.isFlapping ? 1 : 0,
+        pipe_pair_number: this.pipes.length,
+        pipes: this.pipes.length > 0 ? JSON.stringify(
+          this.pipes.map(pipePair => ({
+            x: pipePair.x,
+            top_y: pipePair.topY,
+            bot_y: pipePair.botY,
+            passed: pipePair.passed
+          }))
+        ) : "null",
+        score: this.points,
+        game_is_over: this.gameIsOver ? 1 : 0,
+      });
+      
       this.flappingElapsed += dt;
       this.pipesElapsed += dt;
 
@@ -106,10 +132,16 @@ export default class Game {
       this.render(this.ctx);
     }
 
+    this.bird.isFlapping = false;
+    this.frameId++;
+
     requestAnimationFrame(this.gameLoop);
   };
 
   reset() {
+    this.episodeId++;
+    this.frameId = 0;
+
     this.deltaTime = 0;
     this.lastTime = 0;
     this.pipesElapsed = 0;
@@ -131,12 +163,15 @@ export default class Game {
     if (index > -1) this.pipes.splice(index, 1);
   }
 
-  //! Has to be arrow function to preserve the right "this" (.bind() works too)
+  // Has to be arrow function to preserve the right "this" (.bind() works too)
   onClick = () => {
     if (this.gameIsOver) {
       this.gameIsOver = false;
       this.reset();
-    } else this.bird.flapWings();
+    } else {
+      this.bird.isFlapping = true;
+      this.bird.flapWings()
+    };
   };
 
   areColliding(bird, pipe) {

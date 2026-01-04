@@ -3,6 +3,8 @@ export default class Bird {
   constructor(game) {
     this.game = game;
 
+    this.isFlapping = false;
+
     this.imageUp = new Image();
     this.imageUp.src = "../images/fb_up.png";
 
