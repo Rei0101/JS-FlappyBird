@@ -18,14 +18,8 @@ document.getElementById("exportGame").addEventListener("click", () => {
     let csvString = csvRows.join('\n')
 
     const blob = new Blob([csvString], { type: "text/csv" });
-    console.log(blob);
-    
     const url = URL.createObjectURL(blob);
-    console.log(url);
-    
     const a = document.createElement("a");
-    console.log(a);
-    
     a.href = url;
 
     const now = new Date();
