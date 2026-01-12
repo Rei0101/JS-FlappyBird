@@ -6,10 +6,10 @@ export default class Bird {
     this.isFlapping = false;
 
     this.imageUp = new Image();
-    this.imageUp.src = "../images/fb_up.png";
+    this.imageUp.src = "../images/fb-up.png";
 
     this.imageDown = new Image();
-    this.imageDown.src = "../images/fb_down.png";
+    this.imageDown.src = "../images/fb-down.png";
 
     this.currentImage = this.imageUp;
 
