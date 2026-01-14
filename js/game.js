@@ -12,6 +12,7 @@ export default class Game {
     this.agentType = "human";
 
     this.loopIsRunning = false;
+    this.gameIsImported = false;
 
     this.pipesInterval = 3;
     this.flappingInterval = 0.5;
@@ -71,6 +72,12 @@ export default class Game {
 
   // Has to be arrow function to preserve the right "this" (.bind() works too)
   gameLoop = (timestamp) => {
+    if (this.gameIsImported) {
+        this.render(this.ctx);
+        requestAnimationFrame(this.gameLoop);
+        return;
+    }
+
     if (!this.lastTime) this.lastTime = timestamp;
     this.deltaTime = timestamp - this.lastTime;
     this.lastTime = timestamp;
@@ -96,19 +103,20 @@ export default class Game {
         episode_id: this.episodeId,
         frame_id: this.frameId,
         agent_type: this.agentType,
-        bird_x: this.bird.x,
         bird_y: this.bird.y,
         bird_velocity: this.bird.velocity,
         action: this.bird.isFlapping ? 1 : 0,
         pipe_pair_number: this.pipes.length,
-        pipes: this.pipes.length > 0 ? JSON.stringify(
-          this.pipes.map(pipePair => ({
-            x: pipePair.x,
-            top_y: pipePair.topY,
-            bot_y: pipePair.botY,
-            passed: pipePair.passed
-          }))
-        ) : "null",
+        pipes: this.pipes.length > 0
+        ? btoa(JSON.stringify(
+            this.pipes.map(pipePair => ({
+                x: pipePair.x,
+                top_y: pipePair.topY,
+                bot_y: pipePair.botY,
+                passed: pipePair.passed
+            }))
+        ))
+        : "",
         score: this.points,
         game_is_over: this.gameIsOver ? 1 : 0,
       });
@@ -155,6 +163,8 @@ export default class Game {
   }
 
   addPipePair() {
+    if (this.gameIsImported) return;
+    
     let pipePair = new Pipes(this);
     this.pipes.push(pipePair);
   }
@@ -165,6 +175,8 @@ export default class Game {
 
   // Has to be arrow function to preserve the right "this" (.bind() works too)
   onClick = () => {
+    if (this.gameIsImported) return;
+
     if (this.gameIsOver) {
       this.gameIsOver = false;
       this.reset();
