@@ -13,11 +13,11 @@ export default class Bird {
 
     this.currentImage = this.imageUp;
 
-    this.x = this.game.GAME_WIDTH * this.game.BIRD_X_RATIO;
-    this.#y = (this.game.GAME_HEIGHT - this.height) / 2;
-
     this.width = this.game.BIRD_WIDTH;
     this.height = this.game.BIRD_HEIGHT;
+    
+    this.x = this.game.GAME_WIDTH * this.game.BIRD_X_RATIO;
+    this.#y = (this.game.GAME_HEIGHT - this.height) / 2;
 
     this.velocity = 0;
   }

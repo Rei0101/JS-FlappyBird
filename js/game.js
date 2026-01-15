@@ -6,7 +6,6 @@ export default class Game {
     this.cvs = cvs;
     this.ctx = ctx;
 
-    this.metadata = {};
     this.frameStates = [];
     this.episodeId = -1; // So it starts at 0 after reset()
     this.frameId = 0;
@@ -42,10 +41,7 @@ export default class Game {
     this.gameIsOver = true;
 
     this.points = 0;
-  }
 
-  setup() {
-    this.cvs.addEventListener("click", this.onClick);
     this.metadata = {
       agent_type: this.AGENT_TYPE,
       game_width: this.GAME_WIDTH,
@@ -59,6 +55,10 @@ export default class Game {
       pipe_velocity: this.PIPE_VELOCITY,
       pipes_interval: this.PIPES_INTERVAL,
     };
+  }
+
+  setup() {
+    this.cvs.addEventListener("click", this.onClick);
 
     if (!this.loopIsRunning) {
       this.loopIsRunning = true;
