@@ -30,6 +30,24 @@ function parseCSV(csvText) {
     return obj;
   });
 }
+function applyMetadataToGame(game, meta) {
+  game.AGENT_TYPE = meta.agent_type;
+
+  game.GAME_WIDTH = Number(meta.game_width);
+  game.GAME_HEIGHT = Number(meta.game_height);
+
+  game.BIRD_WIDTH = Number(meta.bird_width);
+  game.BIRD_HEIGHT = Number(meta.bird_height);
+  game.GRAVITY = Number(meta.gravity);
+
+  game.PIPE_GAP = Number(meta.pipe_gap);
+  game.PIPE_WIDTH = Number(meta.pipe_width);
+  game.PIPE_VELOCITY = Number(meta.pipe_velocity);
+  game.PIPES_INTERVAL = Number(meta.pipes_interval);
+
+  game.BIRD_X_RATIO = Number(meta.bird_x_ratio);
+  game.bird.x = game.GAME_WIDTH * game.BIRD_X_RATIO;
+}
 function objectToSingleRowCSV(obj) {
   const headers = Object.keys(obj).join(",");
   const values = Object.values(obj).join(",");
@@ -43,7 +61,7 @@ function framesToCSV(frames) {
 
 document.getElementById("importGame").addEventListener("click", () => {
   if (!game.gameIsOver) {
-    alert("Sorry, can't import game state CSV right now.");
+    alert("Sorry, can't import game right now.");
     return;
   }
 
@@ -51,69 +69,86 @@ document.getElementById("importGame").addEventListener("click", () => {
 });
 document.getElementById("fileInput").addEventListener("change", function (e) {
   if (!game.gameIsOver) {
-    game.gameIsOver = true;
-    alert("Sorry, can't import game state CSV right now.");
+    alert("Sorry, can't import game right now.");
     return;
   }
 
   const file = e.target.files[0];
-  if (!file) {
-    alert("Sorry, can't import game state CSV right now.");
-    return;
-  }
+  if (!file) return;
 
   const reader = new FileReader();
-  reader.onload = function (event) {
-    activeReplayId++;
-    const currentReplayId = activeReplayId;
-    game.gameIsImported = false;
-    game.gameIsOver = true;
 
-    const csvContent = event.target.result;
-    const frames = parseCSV(csvContent);
+  reader.onload = async function (event) {
+    try {
+      activeReplayId++;
+      const currentReplayId = activeReplayId;
 
-    let currentFrame = 0;
-    game.reset();
-    game.gameIsImported = true;
-    game.gameIsOver = false;
+      game.gameIsImported = false;
+      game.gameIsOver = true;
 
-    function runReplay() {
-      if (currentReplayId !== activeReplayId) return;
+      const zip = await JSZip.loadAsync(event.target.result);
 
-      if (currentFrame < frames.length) {
-        const data = frames[currentFrame];
-
-        game.bird.y = data.bird_y;
-        game.bird.velocity = data.bird_velocity;
-        game.points = data.score;
-
-        if (data.pipes && data.pipes.length > 0) {
-          game.pipes = data.pipes.map((p) => {
-            const pipe = new Pipes(game);
-            pipe.x = p.x;
-            pipe.topY = p.top_y;
-            pipe.botY = p.bot_y;
-            pipe.passed = p.passed;
-            pipe.topHeight = p.top_y;
-            pipe.botHeight = game.GAME_HEIGHT - p.bot_y;
-            return pipe;
-          });
-        } else {
-          game.pipes = [];
-        }
-        currentFrame++;
-        requestAnimationFrame(runReplay);
-      } else {
-        game.episodeId = -1;
-        game.gameIsImported = false;
-        game.gameIsOver = true;
-
-        document.getElementById("fileInput").value = "";
+      if (!zip.file("frames.csv") || !zip.file("metadata.csv")) {
+        throw new Error("Invalid replay ZIP");
       }
+
+      const framesCSV = await zip.file("frames.csv").async("string");
+      const metaCSV = await zip.file("metadata.csv").async("string");
+
+      const frames = parseCSV(framesCSV);
+      const metadata = parseCSV(metaCSV)[0];
+
+      game.reset();
+      applyMetadataToGame(game, metadata);
+
+      game.gameIsImported = true;
+      game.gameIsOver = false;
+
+      let currentFrame = 0;
+
+      function runReplay() {
+        if (currentReplayId !== activeReplayId) return;
+
+        if (currentFrame < frames.length) {
+          const data = frames[currentFrame];
+
+          game.bird.y = data.bird_y;
+          game.bird.velocity = data.bird_velocity;
+          game.points = data.score;
+
+          if (data.pipes && data.pipes.length > 0) {
+            game.pipes = data.pipes.map((p) => {
+              const pipe = new Pipes(game);
+              pipe.x = p.x;
+              pipe.topY = p.top_y;
+              pipe.botY = p.bot_y;
+              pipe.passed = p.passed;
+              pipe.topHeight = p.top_y;
+              pipe.botHeight = game.GAME_HEIGHT - p.bot_y;
+              return pipe;
+            });
+          } else {
+            game.pipes = [];
+          }
+
+          currentFrame++;
+          requestAnimationFrame(runReplay);
+        } else {
+          game.episodeId = -1;
+          game.gameIsImported = false;
+          game.gameIsOver = true;
+          document.getElementById("fileInput").value = "";
+        }
+      }
+
+      runReplay();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to import replay.");
     }
-    runReplay();
   };
-  reader.readAsText(file);
+
+  reader.readAsArrayBuffer(file);
 });
 
 document.getElementById("exportGame").addEventListener("click", async () => {

@@ -20,6 +20,7 @@ export default class Game {
     this.AGENT_TYPE = "human";
     this.GAME_WIDTH = GAME_WIDTH;
     this.GAME_HEIGHT = GAME_HEIGHT;
+    this.BIRD_X_RATIO = 0.3;
     this.BIRD_WIDTH = 50;
     this.BIRD_HEIGHT = 40;
     this.GRAVITY = 600;
@@ -49,7 +50,7 @@ export default class Game {
       agent_type: this.AGENT_TYPE,
       game_width: this.GAME_WIDTH,
       game_height: this.GAME_HEIGHT,
-      bird_start_x: this.bird.x,
+      bird_x_ratio: this.BIRD_X_RATIO,
       bird_width: this.BIRD_WIDTH,
       bird_height: this.BIRD_HEIGHT,
       gravity: this.GRAVITY,
