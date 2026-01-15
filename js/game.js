@@ -6,23 +6,34 @@ export default class Game {
     this.cvs = cvs;
     this.ctx = ctx;
 
+    this.metadata = {};
     this.frameStates = [];
     this.episodeId = -1;  // So it starts at 0 after reset()
     this.frameId = 0;
-    this.agentType = "human";
 
     this.loopIsRunning = false;
     this.gameIsImported = false;
 
-    this.pipesInterval = 3;
-    this.flappingInterval = 0.5;
+    this.BIRD_IMAGE_UP = "../images/fb-up.png";
+    this.BIRD_IMAGE_DOWN = "../images/fb-down.png";
+
+    this.AGENT_TYPE = "human";
+    this.GAME_WIDTH = GAME_WIDTH;
+    this.GAME_HEIGHT = GAME_HEIGHT;
+    this.BIRD_WIDTH = 50;
+    this.BIRD_HEIGHT = 40;
+    this.GRAVITY = 600;
+    this.PIPE_START_POINT = 500;
+    this.PIPE_GAP = 200;
+    this.PIPE_WIDTH = 75;
+    this.PIPE_VELOCITY = 100;
+    this.PIPES_INTERVAL = 3;
+    this.FLAPPING_INTERVAL = 0.5;
+
     this.deltaTime = 0;
     this.lastTime = 0;
     this.pipesElapsed = 0;
     this.flappingElapsed = 0;
-
-    this.GAME_WIDTH = GAME_WIDTH;
-    this.GAME_HEIGHT = GAME_HEIGHT;
 
     this.bird = new Bird(this);
     this.pipes = [];
@@ -102,7 +113,7 @@ export default class Game {
       this.frameStates.push({
         episode_id: this.episodeId,
         frame_id: this.frameId,
-        agent_type: this.agentType,
+        agent_type: this.AGENT_TYPE,
         bird_y: this.bird.y,
         bird_velocity: this.bird.velocity,
         action: this.bird.isFlapping ? 1 : 0,
@@ -124,7 +135,7 @@ export default class Game {
       this.flappingElapsed += dt;
       this.pipesElapsed += dt;
 
-      if (this.flappingElapsed >= this.flappingInterval) {
+      if (this.flappingElapsed >= this.FLAPPING_INTERVAL) {
         if (this.bird.currentImage === this.bird.imageUp) {
           this.bird.currentImage = this.bird.imageDown;
         } else {
@@ -132,7 +143,7 @@ export default class Game {
         }
         this.flappingElapsed = 0;
       }
-      if (this.pipesElapsed >= this.pipesInterval) {
+      if (this.pipesElapsed >= this.PIPES_INTERVAL) {
         this.addPipePair();
         this.pipesElapsed = 0;
       }

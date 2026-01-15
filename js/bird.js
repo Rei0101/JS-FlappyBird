@@ -6,20 +6,19 @@ export default class Bird {
     this.isFlapping = false;
 
     this.imageUp = new Image();
-    this.imageUp.src = "../images/fb-up.png";
+    this.imageUp.src = this.game.BIRD_IMAGE_UP;
 
     this.imageDown = new Image();
-    this.imageDown.src = "../images/fb-down.png";
+    this.imageDown.src = this.game.BIRD_IMAGE_DOWN;
 
     this.currentImage = this.imageUp;
 
     this.x = this.game.GAME_WIDTH / 2 - 50;
     this.#y = this.game.GAME_HEIGHT / 2 - 70;
 
-    this.width = 50;
-    this.height = 40;
+    this.width = this.game.BIRD_WIDTH;
+    this.height = this.game.BIRD_HEIGHT;
 
-    this.gravity = 600;
     this.velocity = 0;
   }
 
@@ -57,7 +56,7 @@ export default class Bird {
   }
 
   fall(dt) {
-    this.velocity += this.gravity * dt;
+    this.velocity += this.game.GRAVITY * dt;
     this.y += this.velocity * dt;
   }
 
