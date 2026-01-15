@@ -3,11 +3,9 @@ export default class Pipes {
   constructor(game) {
     this.game = game;
 
-    this.startPoint = game.PIPE_START_POINT;
-
     this.gap = game.PIPE_GAP;
 
-    this.#x = this.startPoint;
+    this.#x = game.PIPE_START_POINT;
     this.topY = Math.random() * (this.game.GAME_HEIGHT - this.gap);
     this.botY = this.topY + this.gap;
 
@@ -81,7 +79,7 @@ export default class Pipes {
   }
 
   reset() {
-    this.x = this.startPoint;
+    this.x = game.PIPE_START_POINT;
     this.topY = Math.random() * (this.game.GAME_HEIGHT - this.gap);
     this.botY = this.topY + this.gap;
 

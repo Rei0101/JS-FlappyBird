@@ -9,12 +9,14 @@
 
   <body>
     <button id="importGame">Import game <span>⬇</span></button>
-    <input type="file" id="fileInput" accept=".csv" style="display: none;">
+    <input type="file" id="fileInput" accept=".csv" style="display: none" />
 
     <canvas id="game-canvas" width="500" height="700"></canvas>
 
     <button id="exportGame">Export game <span>⬆</span></button>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="js/ui-logic.js" type="module"></script>
+    <script src="js/index.js" type="module"></script>
   </body>
 </html>
