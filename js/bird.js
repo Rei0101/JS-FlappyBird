@@ -4,6 +4,7 @@ export default class Bird {
     this.game = game;
 
     this.isFlapping = false;
+    this.flapCooldown = 0;
 
     this.imageUp = new Image();
     this.imageUp.src = this.game.BIRD_IMAGE_UP;
@@ -41,6 +42,7 @@ export default class Bird {
   }
 
   update(dt) {
+    this.flapCooldown = Math.max(0, this.flapCooldown - dt)
     this.fall(dt);
   }
 

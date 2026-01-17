@@ -209,8 +209,11 @@ export default class Game {
       this.gameIsOver = false;
       this.reset();
     } else {
-      this.bird.isFlapping = true;
-      this.bird.flapWings();
+      if (this.bird.flapCooldown == 0) {
+        this.bird.isFlapping = true;
+        this.bird.flapWings();
+        this.bird.flapCooldown = 0.15;
+      }
     }
   };
 
