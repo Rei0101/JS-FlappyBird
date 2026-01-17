@@ -144,7 +144,7 @@ export default class Game {
                   }))
                 )
               )
-            : "",
+            : "null",
         score: this.points,
         game_is_over: this.gameIsOver ? 1 : 0,
       });
