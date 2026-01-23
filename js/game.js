@@ -127,7 +127,6 @@ export default class Game {
       this.frameStates.push({
         episode_id: this.episodeId,
         frame_id: this.frameId,
-        agent_type: this.AGENT_TYPE,
         bird_y: this.bird.y,
         bird_velocity: this.bird.velocity,
         action: this.bird.isFlapping ? 1 : 0,
