@@ -3,30 +3,28 @@ import Pipes from "./pipes.js";
 
 let activeReplayId = 0;
 
-function parseCSV(csvText) {
+function parseCSV(csvText, maxFrames = 100000) {
   const lines = csvText.trim().split("\n");
-  const headers = lines[0].split(",");
+  if (lines.length < 2) return [];
 
-  return lines.slice(1).map((line) => {
+  const headers = lines[0].split(",");
+  const dataLines = lines.slice(1, maxFrames + 1);
+
+  return dataLines.map((line) => {
     const values = line.split(",");
     let obj = {};
-
     headers.forEach((header, i) => {
       let value = values[i];
-
       if (header === "pipes" && value) {
         try {
           obj[header] = JSON.parse(atob(value));
-        } catch {
-          obj[header] = [];
-        }
-      } else if (!isNaN(value) && value.trim() !== "") {
+        } catch { obj[header] = []; }
+      } else if (!isNaN(value) && value !== "") {
         obj[header] = parseFloat(value);
       } else {
         obj[header] = value;
       }
     });
-
     return obj;
   });
 }
@@ -92,11 +90,22 @@ document.getElementById("fileInput").addEventListener("change", function (e) {
         throw new Error("Invalid replay ZIP");
       }
 
-      const framesCSV = await zip.file("frames.csv").async("string");
       const metaCSV = await zip.file("metadata.csv").async("string");
+      const metadata = parseCSV(metaCSV)[0];
+
+      const framesBuffer = await zip.file("frames.csv").async("uint8array");
+
+      const MAX_BYTES = 20 * 1024 * 1024; 
+      const slicedBuffer = framesBuffer.slice(0, MAX_BYTES);
+
+      let framesCSV = new TextDecoder().decode(slicedBuffer);
+
+      if (framesBuffer.length > MAX_BYTES) {
+          framesCSV = framesCSV.substring(0, framesCSV.lastIndexOf("\n"));
+          console.warn("Replay truncated: File was too large for browser memory.");
+      }
 
       const frames = parseCSV(framesCSV);
-      const metadata = parseCSV(metaCSV)[0];
 
       game.reset();
       applyMetadataToGame(game, metadata);
@@ -144,7 +153,7 @@ document.getElementById("fileInput").addEventListener("change", function (e) {
       runReplay();
     } catch (err) {
       console.error(err);
-      alert("Failed to import replay.");
+      alert("Failed to import replay: " + err.message);
     }
   };
 
