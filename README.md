@@ -1,9 +1,5 @@
 # human-vs-ai-fb-play-analysis
 
-## This project is a work in progress.
-
----
-
 ## How to Run This Project
 
 This project has two separate parts:
